@@ -152,3 +152,4 @@ prediction = model.predict(x_test)
 
 mae = mean_absolute_error(y_test, prediction)
 print(f"MAE: £{mae:,.2f}")
+#This Predicts bad MAE which we are going to fix in Feature Engineering using R^2
