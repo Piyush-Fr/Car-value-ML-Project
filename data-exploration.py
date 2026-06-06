@@ -66,3 +66,16 @@ plt.show()
 
 
 #Corelation Heatmap
+corr_matrix= df.corr(numeric_only= True)
+
+fig, ax = plt.subplots(figsize=(8, 6))
+
+sns.heatmap(
+    corr_matrix,
+    annot= True,
+    fmt='.2f',
+    cmap='coolwarm'
+)
+
+plt.title('Correlation Heatmap')
+plt.show()
