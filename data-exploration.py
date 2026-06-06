@@ -79,3 +79,42 @@ sns.heatmap(
 
 plt.title('Correlation Heatmap')
 plt.show()
+
+#Scatter Plot
+fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+
+plt.subplot(2, 2, 1)  
+plt.scatter(df['year'], df['price'])
+plt.title('Price vs Year')
+plt.xlabel('Year')
+plt.ylabel('Price (£)')
+
+plt.subplot(2, 2, 2)  # position 2
+plt.scatter(df['mileage'], df['price'])
+plt.title('Price vs Mileage')
+plt.xlabel('Mileage')
+plt.ylabel('Price (£)')
+
+plt.subplot(2, 2, 3)
+plt.scatter(df['engineSize'], df['price'])
+plt.title('Price vs Engine Size')
+plt.xlabel('Engine Size')
+plt.ylabel('Price (£)')
+
+plt.subplot(2, 2, 4)  
+sns.boxplot(x='brand', y='price', data=df)
+plt.title('Price by Brand')
+
+plt.tight_layout()
+plt.show()
+
+# Audi and VW Comparison
+fig, ax = plt.subplots(figsize=(8, 5))
+
+sns.boxplot(x='brand', y='price', data=df)
+plt.title('Price by Brand - Audi vs VW')
+plt.xlabel('Brand')
+plt.ylabel('Price (£)')
+
+plt.tight_layout()
+plt.show()
