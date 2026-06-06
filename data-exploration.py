@@ -19,9 +19,7 @@ print('Libraries loaded successfully.')
 try:
     import IPython.display
     from IPython.display import display
-    def proov_tick(task_id):
-        IPython.display.display(IPython.display.Javascript(f'window.parent.postMessage({{ type: "PROOV_CHECKPOINT", checkpoint: "{task_id}" }}, "*");'))
-    proov_tick('setup_complete')
+
 except ImportError:
     pass
 
@@ -118,3 +116,39 @@ plt.ylabel('Price (£)')
 
 plt.tight_layout()
 plt.show()
+
+
+
+
+#ML Model of Linear Regression for Price vs Mileage (not optimal output)
+
+
+
+
+#1 defining input
+
+x = df[['mileage']] #double brackets = 2D array
+y = df['price']     #single brackets = 1D array
+
+
+#2 Splitting data for Training and Testing
+
+x_train, x_test, y_train, y_test = train_test_split(
+    x, y,
+    train_size= 0.2, #20% for testing, 80% for training
+    random_state=42  #fixes the random split so results are reproducible
+)
+
+#3 Create and train the model
+model = LinearRegression()
+model.fit(x_train, y_train) 
+
+
+#4 Prediction
+prediction = model.predict(x_test)
+
+
+#5 MAE Calculation
+
+mae = mean_absolute_error(y_test, prediction)
+print(f"MAE: £{mae:,.2f}")
