@@ -79,3 +79,4 @@ assert df['mileage_per_year'].isna().sum() == 0
 print(f'Car Age {df["car_age"].min():.0f} --> {df["car_age"].max():.0f} ')
 print('Car Age and Mileage Derived')
 
+#One-Hot Encode Categoricals Encode
