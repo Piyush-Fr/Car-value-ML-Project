@@ -45,7 +45,6 @@ display(audi_df.head(3))
 print(df.info())
 print(df.describe())
 
-
 #Outlier Removal
 
 before = len(df)
