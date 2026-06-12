@@ -63,7 +63,6 @@ assert df['price'].min() >= 50
 assert df['price'].max() <= 100000
 print ('Outliers Removed !')
 
-
 #Derive Car Age and Mileage per year
 
 df['car_age'] = 2020 - df['year']
