@@ -149,7 +149,7 @@ tuned_rf = evaluate('Tuned Random Forest', y_test, best_rf.predict(X_test))
 # Car B: 2018 Audi A4, 2.0L, Automatic, Petrol, 30,000 miles
 car_a = pd.DataFrame(columns=X_train.columns, data=[[0]*len(X_train.columns)])
 car_a['mileage'] = 30000
-car_a['car_age'] = 3
+car_a['car_age'] = 2
 car_a['engineSize'] = 1.4
 car_a['tax'] = 30               
 car_a['mpg'] = 53                
@@ -163,7 +163,7 @@ car_a['brand_VW'] = True
 
 car_b = pd.DataFrame(columns=X_train.columns, data=[[0]*len(X_train.columns)])
 car_b['mileage'] = 30000
-car_b['car_age'] = 6                    
+car_b['car_age'] = 2                    
 car_b['engineSize'] = 2.0
 car_b['tax'] = 145
 car_b['mpg'] = 40                       
