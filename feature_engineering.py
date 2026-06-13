@@ -78,3 +78,14 @@ print(f'Car Age {df["car_age"].min():.0f} --> {df["car_age"].max():.0f} ')
 print('Car Age and Mileage Derived')
 
 #One-Hot Encode Categoricals Encode
+
+y = df['price']
+X = df.drop(columns=['price','year','model'])
+X = pd.get_dummies(X , drop_first=True)
+
+assert 'X' in dir()
+assert 'price' not in X.columns
+assert X.isna().sum().sum() == 0
+
+print(f'Feature matrix X: {X.shape[0]:,} rows x {X.shape[1]} features')
+print(f'Target y: min=£{y.min():,.0f}  max=£{y.max():,.0f}  mean=£{y.mean():,.0f}')
