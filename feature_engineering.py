@@ -21,7 +21,6 @@ try:
 
 except ImportError:
     pass
-
 # Data Loading
 # Load local CSV files
 audi_df = pd.read_csv('dataset/audi.csv')
