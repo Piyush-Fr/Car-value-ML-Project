@@ -1,46 +1,15 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-import warnings
-import os
-warnings.filterwarnings('ignore')
 
-plt.rcParams.update({'figure.dpi': 120, 'axes.spines.top': False, 'axes.spines.right': False})
-sns.set_palette('muted')
+#Model Loading
+lr = LinearRegression()
+lr.fit(X_train, y_train)
 
-print('Libraries loaded successfully.')
+def evaluate(name, y_true, y_pred):
+    r2 = r2_score(y_true, y_pred)
+    mae = mean_absolute_error(y_true, y_pred)
+    rmse= np.sqrt(mean_squared_error(y_true, y_pred))
+    print(f'\n{name}')
+    print(f'R2 = {r2:.4f}  ({r2 * 100:.1f}% of variance explained)')
+    print(f'MAE = {mae:.0f}')
+    print(f'RMSE = {rmse:.0f}')
 
-try:
-    import IPython.display
-    from IPython.display import display
-
-except ImportError:
-    pass
-
-# Data Loading
-# Load local CSV files
-audi_df = pd.read_csv('dataset/audi.csv')
-audi_df['brand'] = 'Audi'
-
-vw_df = pd.read_csv('dataset/vw.csv')
-vw_df['brand'] = 'VW'
-
-# Combine the datasets
-df = pd.concat([audi_df, vw_df], ignore_index=True)
-
-# Quick sanity check
-print('=== VW Dataset ===')
-print(f'Shape: {vw_df.shape}')
-display(vw_df.head(3))
-
-print('\n=== Audi Dataset ===')
-print(f'Shape: {audi_df.shape}')
-display(audi_df.head(3))
-
-print(df.info())
-print(df.describe())
+lr_result = evaluate('Linear Regression', y_test, lr.predict(X_test))
