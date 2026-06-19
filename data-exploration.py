@@ -24,15 +24,11 @@ except ImportError:
     pass
 
 # Data Loading
-# Load local CSV files
-audi_df = pd.read_csv('dataset/audi.csv')
-audi_df['brand'] = 'Audi'
+from data_preprocessing import load_data
+df = load_data()
 
-vw_df = pd.read_csv('dataset/vw.csv')
-vw_df['brand'] = 'VW'
-
-# Combine the datasets
-df = pd.concat([audi_df, vw_df], ignore_index=True)
+vw_df = df[df['brand'] == 'VW']
+audi_df = df[df['brand'] == 'Audi']
 
 # Quick sanity check
 print('=== VW Dataset ===')

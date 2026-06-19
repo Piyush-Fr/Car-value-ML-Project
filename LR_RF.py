@@ -23,39 +23,12 @@ try:
 except ImportError:
     pass
 
-# Data Loading
-# Load local CSV files
-audi_df = pd.read_csv('dataset/audi.csv')
-audi_df['brand'] = 'Audi'
+# Data Loading and Preprocessing
+from data_preprocessing import get_prepared_data
+df, X, y = get_prepared_data()
 
-vw_df = pd.read_csv('dataset/vw.csv')
-vw_df['brand'] = 'VW'
-
-# Combine the datasets
-df = pd.concat([audi_df, vw_df], ignore_index=True)
-
-# Quick sanity check
-print('=== VW Dataset ===')
-print(f'Shape: {vw_df.shape}')
-display(vw_df.head(3))
-
-print('\n=== Audi Dataset ===')
-print(f'Shape: {audi_df.shape}')
-display(audi_df.head(3))
-
-print(df.info())
-print(df.describe())
-
-
-df['car_age'] = 2020 - df['year']
-df['mileage_per_year'] = df['mileage'] / df['car_age']
-
-df['mileage_per_year'] = df['mileage_per_year'].replace([float('inf')], 0)
-df['mileage_per_year'] = df['mileage_per_year'].fillna(0)
-
-y = df['price']
-X = df.drop(columns=['price','year','model'])
-X = pd.get_dummies(X , drop_first=True)
+print('=== Dataset Prepared ===')
+print(f'Feature matrix X: {X.shape[0]:,} rows x {X.shape[1]} features')
 
 
 
