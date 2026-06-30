@@ -10,6 +10,7 @@ def load_data():
     vw_df['brand'] = 'VW'
 
     df = pd.concat([audi_df, vw_df], ignore_index=True)
+    df['model'] = df['model'].str.strip()
     return df
 
 def clean_data(df):
@@ -37,7 +38,7 @@ def get_prepared_data():
     df = engineer_features(df)
     
     y = df['price']
-    X = df.drop(columns=['price', 'year', 'model'])
+    X = df.drop(columns=['price', 'year'])
     X = pd.get_dummies(X, drop_first=True)
     
     return df, X, y

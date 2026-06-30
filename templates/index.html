@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Monovaluation - Used Car Engine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffffff",
+                        "background": "#131313",
+                        "surface-variant": "#353534",
+                        "outline-variant": "#444748",
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #0A0A0A; }
+        .input-underline {
+            border-bottom: 1px solid #262626;
+            transition: border-color 0.3s ease;
+        }
+        .input-underline:focus {
+            border-bottom-color: #ffffff;
+            outline: none;
+            box-shadow: none;
+        }
+        select option {
+            background-color: #1A1A1A;
+            color: #ffffff;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        .delay-400 { animation-delay: 400ms; }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0px 20px 40px rgba(0,0,0,0.5); border-color: #262626; }
+            50% { box-shadow: 0px 20px 50px rgba(255,255,255,0.05); border-color: #404040; }
+        }
+        .animate-pulse-glow {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-[#e5e2e1] font-[Inter] antialiased overflow-x-hidden min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full flex justify-between items-center px-16 py-4 z-50 bg-transparent transition-all duration-300" id="global-nav">
+<button class="material-symbols-outlined text-white opacity-70 hover:opacity-100">menu</button>
+<span class="text-2xl tracking-widest text-white font-light select-none">MONOVALUATION</span>
+<button class="material-symbols-outlined text-white opacity-70 hover:opacity-100">account_circle</button>
+</header>
+<main>
+
+<!-- Hero Section -->
+<section class="relative h-[60vh] w-full flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0 flex justify-end">
+    <div class="w-full md:w-[70%] h-full relative animate-fade-in-up">
+        <video class="absolute inset-0 w-full h-full object-cover object-center" autoplay loop muted playsinline>
+            <source src="/static/bg_video.mp4" type="video/mp4">
+        </video>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 via-transparent to-[#0A0A0A]"></div>
+    </div>
+</div>
+<div class="max-w-[1280px] mx-auto w-full px-16 relative z-10 grid grid-cols-12 gap-6 items-center h-full pt-20">
+    <div class="col-span-12 md:col-span-6 flex flex-col gap-6 animate-fade-in-up delay-100">
+        <h1 class="text-6xl font-light text-white tracking-tighter">Used Car<br/>Valuation Engine</h1>
+        <p class="text-lg text-[#c4c7c8] max-w-md">Advanced algorithmic assessment for premium automotive assets. Determine market value with uncompromising precision.</p>
+    </div>
+</div>
+</section>
+
+<!-- Performance Metrics Section -->
+<section class="bg-[#0A0A0A] w-full py-12 border-y border-[#262626]">
+    <div class="max-w-[1280px] mx-auto px-16 animate-fade-in-up delay-200">
+        <div class="flex items-center gap-4 mb-6">
+            <span class="material-symbols-outlined text-white">analytics</span>
+            <h2 class="text-2xl font-light text-white tracking-wide">Model Performance Metrics</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-[#111] rounded-xl p-6 border border-[#262626]">
+                <p class="text-xs font-semibold text-[#8e9192] tracking-widest uppercase mb-2">R² Score (Variance Explained)</p>
+                <p class="text-4xl font-light text-white" id="metric-r2">--</p>
+            </div>
+            <div class="bg-[#111] rounded-xl p-6 border border-[#262626]">
+                <p class="text-xs font-semibold text-[#8e9192] tracking-widest uppercase mb-2">Mean Absolute Error (£)</p>
+                <p class="text-4xl font-light text-white" id="metric-mae">--</p>
+            </div>
+            <div class="bg-[#111] rounded-xl p-6 border border-[#262626]">
+                <p class="text-xs font-semibold text-[#8e9192] tracking-widest uppercase mb-2">Root Mean Squared Error (£)</p>
+                <p class="text-4xl font-light text-white" id="metric-rmse">--</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content (Inputs & Valuation Card) -->
+<section class="bg-[#0A0A0A] w-full py-20">
+<div class="max-w-[1280px] mx-auto px-16">
+    <div class="flex items-center gap-4 mb-10 animate-fade-in-up delay-200">
+        <span class="material-symbols-outlined text-white">calculate</span>
+        <h2 class="text-2xl font-light text-white tracking-wide">Single Vehicle Estimator</h2>
+    </div>
+
+    <div class="grid grid-cols-12 gap-10 items-start">
+        <!-- Left Column: Inputs -->
+        <div class="col-span-12 md:col-span-6 grid grid-cols-2 gap-x-8 gap-y-10 animate-fade-in-up delay-300">
+            <div class="flex flex-col gap-2 group col-span-2 sm:col-span-1">
+                <label class="text-xs font-semibold text-[#8e9192] tracking-widest uppercase transition-colors group-focus-within:text-white">Car Brand</label>
+                <select id="car-brand" class="w-full bg-transparent border-0 input-underline text-white text-lg py-2 px-0 focus:ring-0 appearance-none cursor-pointer">
+                    <option value="VW">VW</option>
+                    <option value="Audi">Audi</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-2 group col-span-2 sm:col-span-1">
+                <label class="text-xs font-semibold text-[#8e9192] tracking-widest uppercase transition-colors group-focus-within:text-white">Engine Size (L)</label>
+                <select id="car-engine" class="w-full bg-transparent border-0 input-underline text-white text-lg py-2 px-0 focus:ring-0 appearance-none cursor-pointer">
+                    <option value="1.0">1.0L</option>
+                    <option value="1.2">1.2L</option>
+                    <option value="1.4">1.4L</option>
+                    <option value="1.5">1.5L</option>
+                    <option value="1.6" selected>1.6L</option>
+                    <option value="2.0">2.0L</option>
+                    <option value="3.0">3.0L</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-2 group col-span-2 sm:col-span-1">
+                <label class="text-xs font-semibold text-[#8e9192] tracking-widest uppercase transition-colors group-focus-within:text-white">Fuel Type</label>
+                <select id="car-fuel" class="w-full bg-transparent border-0 input-underline text-white text-lg py-2 px-0 focus:ring-0 appearance-none cursor-pointer">
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-2 group col-span-2 sm:col-span-1">
+                <label class="text-xs font-semibold text-[#8e9192] tracking-widest uppercase transition-colors group-focus-within:text-white">Transmission</label>
+                <select id="car-trans" class="w-full bg-transparent border-0 input-underline text-white text-lg py-2 px-0 focus:ring-0 appearance-none cursor-pointer">
+                    <option value="Manual">Manual</option>
+                    <option value="Automatic">Automatic</option>
+                    <option value="Semi-Auto">Semi-Auto</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-2 group col-span-2 sm:col-span-1">
+                <label class="text-xs font-semibold text-[#8e9192] tracking-widest uppercase transition-colors group-focus-within:text-white">Mileage</label>
+                <input id="car-mileage" class="w-full bg-transparent border-0 input-underline text-white text-lg py-2 px-0 focus:ring-0" placeholder="e.g. 15000" type="text" value="30000"/>
+            </div>
+
+            <div class="flex flex-col gap-2 group col-span-2 sm:col-span-1">
+                <label class="text-xs font-semibold text-[#8e9192] tracking-widest uppercase transition-colors group-focus-within:text-white">Age (Years)</label>
+                <input id="car-age" class="w-full bg-transparent border-0 input-underline text-white text-lg py-2 px-0 focus:ring-0" placeholder="e.g. 5" type="text" value="5"/>
+            </div>
+        </div>
+
+        <!-- Right Column: Floating Card -->
+        <div class="col-span-12 md:col-span-5 md:col-start-8 animate-fade-in-up delay-400 mt-4 md:mt-0">
+            <div class="bg-[#1A1A1A] border border-[#262626] rounded-xl p-10 flex flex-col items-center justify-center gap-10 animate-pulse-glow hover:scale-[1.02] hover:border-[#505050] transition-all">
+                <div class="flex flex-col items-center gap-4 w-full">
+                    <span class="text-xs font-semibold text-[#8e9192] tracking-[0.2em] uppercase">Estimated Value</span>
+                    <div class="flex items-baseline gap-2">
+                        <span id="price-display" class="text-5xl font-light text-white tabular-nums">---,---</span>
+                        <span class="text-lg text-[#c4c7c8]">GBP</span>
+                    </div>
+                    <div class="w-full h-px bg-[#262626] my-2"></div>
+                    <span id="status-text" class="text-sm text-[#8e9192] flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">info</span> Awaiting parameters
+                    </span>
+                </div>
+                <button id="estimate-btn" class="w-full bg-white text-black text-xs font-bold py-4 px-6 rounded uppercase tracking-[0.15em] hover:scale-[1.04] active:scale-[0.96] transition-transform">ESTIMATE PRICE</button>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- Brand Comparison Section -->
+<section class="bg-[#111] w-full py-20 border-t border-[#262626]">
+    <div class="max-w-[1280px] mx-auto px-16">
+        <div class="flex items-center gap-4 mb-12">
+            <span class="material-symbols-outlined text-white">compare_arrows</span>
+            <h2 class="text-2xl font-light text-white tracking-wide">Brand Premium Comparison</h2>
+            <p class="text-[#8e9192] ml-4 max-w-2xl border-l border-[#262626] pl-4">Discover the exact market premium placed on the brand emblem while holding all other vehicle specifications perfectly constant.</p>
+        </div>
+        
+        <div class="grid grid-cols-12 gap-10 items-stretch">
+            <!-- Shared Parameters Input -->
+            <div class="col-span-12 md:col-span-4 bg-[#1A1A1A] p-8 rounded-xl border border-[#262626]">
+                <h3 class="text-xs font-bold text-white mb-6 border-b border-[#262626] pb-4 uppercase tracking-widest">Shared Specifications</h3>
+                <div class="flex flex-col gap-6">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-[#8e9192] uppercase tracking-widest">Engine Size (L)</label>
+                        <select id="comp-engine" class="w-full bg-transparent border-0 border-b border-[#262626] text-white focus:ring-0 px-0 appearance-none">
+                            <option value="1.0">1.0L</option>
+                            <option value="1.2">1.2L</option>
+                            <option value="1.4">1.4L</option>
+                            <option value="1.5">1.5L</option>
+                            <option value="1.6" selected>1.6L</option>
+                            <option value="2.0">2.0L</option>
+                            <option value="3.0">3.0L</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-[#8e9192] uppercase tracking-widest">Fuel Type</label>
+                        <select id="comp-fuel" class="w-full bg-transparent border-0 border-b border-[#262626] text-white focus:ring-0 px-0 appearance-none">
+                            <option value="Petrol">Petrol</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-[#8e9192] uppercase tracking-widest">Transmission</label>
+                        <select id="comp-trans" class="w-full bg-transparent border-0 border-b border-[#262626] text-white focus:ring-0 px-0 appearance-none">
+                            <option value="Manual">Manual</option>
+                            <option value="Automatic">Automatic</option>
+                            <option value="Semi-Auto">Semi-Auto</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-[#8e9192] uppercase tracking-widest">Mileage</label>
+                        <input id="comp-mileage" class="w-full bg-transparent border-0 border-b border-[#262626] text-white focus:ring-0 px-0" type="text" value="30000"/>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-semibold text-[#8e9192] uppercase tracking-widest">Age (Years)</label>
+                        <input id="comp-age" class="w-full bg-transparent border-0 border-b border-[#262626] text-white focus:ring-0 px-0" type="text" value="3"/>
+                    </div>
+                </div>
+                <button id="compare-btn" class="mt-8 w-full bg-[#333] hover:bg-[#555] text-white text-xs font-bold py-4 rounded uppercase tracking-widest transition-colors">RUN COMPARISON</button>
+            </div>
+            
+            <!-- Results -->
+            <div class="col-span-12 md:col-span-8 grid grid-cols-2 gap-6">
+                <!-- VW Result -->
+                <div class="bg-[#1A1A1A] p-8 rounded-xl border-t-4 border-[#001e50] flex flex-col items-center justify-center shadow-lg relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-b from-[#001e50]/10 to-transparent"></div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Volkswagen_Logo_till_1995.svg/1024px-Volkswagen_Logo_till_1995.svg.png" class="h-16 w-16 mb-6 opacity-80" style="filter: invert(1);"/>
+                    <span class="text-xs font-semibold text-[#8e9192] tracking-[0.2em] uppercase mb-4 z-10">Volkswagen Value</span>
+                    <span id="comp-vw-price" class="text-5xl font-light text-white tabular-nums z-10">---,---</span>
+                    <span class="text-sm text-[#8e9192] mt-2 z-10">GBP</span>
+                </div>
+                <!-- Audi Result -->
+                <div class="bg-[#1A1A1A] p-8 rounded-xl border-t-4 border-[#bb0a30] flex flex-col items-center justify-center shadow-lg relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-b from-[#bb0a30]/10 to-transparent"></div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/1280px-Audi-Logo_2016.svg.png" class="h-12 w-24 mb-10 opacity-80" style="filter: invert(1);"/>
+                    <span class="text-xs font-semibold text-[#8e9192] tracking-[0.2em] uppercase mb-4 z-10">Audi Value</span>
+                    <span id="comp-audi-price" class="text-5xl font-light text-white tabular-nums z-10">---,---</span>
+                    <span class="text-sm text-[#8e9192] mt-2 z-10">GBP</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</main>
+<script>
+        // Fetch Metrics on Load
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const res = await fetch('/api/metrics');
+                const metrics = await res.json();
+                if(metrics.R2 !== undefined) {
+                    animateValue(document.getElementById('metric-r2'), 0, metrics.R2, 1000, true);
+                    animateValue(document.getElementById('metric-mae'), 0, metrics.MAE, 1000);
+                    animateValue(document.getElementById('metric-rmse'), 0, metrics.RMSE, 1000);
+                }
+            } catch(e) { console.error("Could not load metrics"); }
+        });
+
+        // Simple nav background transition on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('global-nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-[#0A0A0A]/90', 'backdrop-blur-md', 'border-b', 'border-[#262626]');
+                nav.classList.remove('bg-transparent');
+            } else {
+                nav.classList.remove('bg-[#0A0A0A]/90', 'backdrop-blur-md', 'border-b', 'border-[#262626]');
+                nav.classList.add('bg-transparent');
+            }
+        });
+
+        // Number counter animation
+        function animateValue(obj, start, end, duration, isFloat=false) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const easeProgress = 1 - Math.pow(1 - progress, 4);
+                let current = easeProgress * (end - start) + start;
+                obj.innerHTML = isFloat ? current.toFixed(4) : Math.floor(current).toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    obj.innerHTML = isFloat ? end : end.toLocaleString();
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Single Estimator Logic
+        document.getElementById('estimate-btn').addEventListener('click', async () => {
+            const payload = {
+                brand: document.getElementById('car-brand').value,
+                engine_size: document.getElementById('car-engine').value,
+                fuel_type: document.getElementById('car-fuel').value,
+                transmission: document.getElementById('car-trans').value,
+                mileage: parseFloat((document.getElementById('car-mileage').value||'30000').replace(/,/g, '')),
+                car_age: parseFloat(document.getElementById('car-age').value||'5')
+            };
+
+            document.getElementById('price-display').innerText = '...';
+            document.getElementById('status-text').innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">sync</span> Computing...';
+
+            await new Promise(r => setTimeout(r, 800));
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                
+                if (data.prediction) {
+                    animateValue(document.getElementById('price-display'), 0, data.prediction, 1500);
+                    document.getElementById('status-text').innerHTML = '<span class="material-symbols-outlined text-[16px] text-green-400">check_circle</span> Computed';
+                } else {
+                    document.getElementById('price-display').innerText = 'Error';
+                    document.getElementById('status-text').innerHTML = '<span class="material-symbols-outlined text-[16px] text-red-400">error</span> ' + (data.error || 'Failed');
+                }
+            } catch (e) {
+                document.getElementById('price-display').innerText = 'Error';
+                document.getElementById('status-text').innerHTML = '<span class="material-symbols-outlined text-[16px] text-red-400">error</span> Network Error';
+            }
+        });
+
+        // Comparison Logic
+        document.getElementById('compare-btn').addEventListener('click', async () => {
+            const payload = {
+                engine_size: document.getElementById('comp-engine').value,
+                fuel_type: document.getElementById('comp-fuel').value,
+                transmission: document.getElementById('comp-trans').value,
+                mileage: parseFloat((document.getElementById('comp-mileage').value||'30000').replace(/,/g, '')),
+                car_age: parseFloat(document.getElementById('comp-age').value||'3')
+            };
+
+            document.getElementById('comp-vw-price').innerText = '...';
+            document.getElementById('comp-audi-price').innerText = '...';
+
+            await new Promise(r => setTimeout(r, 800));
+
+            try {
+                const response = await fetch('/api/compare', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                
+                if (data.VW && data.Audi) {
+                    animateValue(document.getElementById('comp-vw-price'), 0, data.VW, 1500);
+                    animateValue(document.getElementById('comp-audi-price'), 0, data.Audi, 1500);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        });
+    </script>
+</body></html>

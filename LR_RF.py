@@ -9,6 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
 import warnings
 import os
+import joblib
 warnings.filterwarnings('ignore')
 
 plt.rcParams.update({'figure.dpi': 120, 'axes.spines.top': False, 'axes.spines.right': False})
@@ -90,13 +91,14 @@ top15.plot(kind = 'barh', ax=ax, color='steelblue')
 ax.set_title('Top 15 Feature Importances - Random Forest', fontsize=14, fontweight='bold')
 ax.set_xlabel('Importance')
 plt.tight_layout()
-plt.show()
+# plt.show()
 
 #Hyperparamete tuning with GridSearchCV
 
 param_grid = {
-    'n_estimators': [50, 100, 200],
-    'max_depth': [None, 10, 20],
+    'n_estimators': [100, 200, 300],
+    'max_depth': [10, 20, None],
+    'min_samples_split': [2, 5, 10]
 }
 
 rf_base = RandomForestRegressor(random_state=42, n_jobs=-1)
@@ -159,3 +161,13 @@ print(f"Car A - 2018 VW Golf 1.4L Manual Petrol 30k miles:")
 print(f"  Predicted Price: £{pred_a:,.0f}")
 print(f"\nCar B - 2018 Audi A4 2.0L Automatic Petrol 30k miles:")
 print(f"  Predicted Price: £{pred_b:,.0f}")
+
+# Save the model and columns for the Flask web app
+joblib.dump(best_rf, 'model.pkl')
+joblib.dump(list(X_train.columns), 'columns.pkl')
+print("\nModel saved to model.pkl and columns saved to columns.pkl")
+
+import json
+with open('metrics.json', 'w') as f:
+    json.dump(tuned_rf, f)
+print("Metrics saved to metrics.json")
