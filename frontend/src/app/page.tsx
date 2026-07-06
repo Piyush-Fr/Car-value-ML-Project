@@ -6,7 +6,7 @@ import { BarChart3, Calculator, Info, CheckCircle, AlertCircle, Loader2, ArrowRi
 const CustomSelect = ({ label, value, options, onChange }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex flex-col gap-2 relative group w-full">
+    <div className={`flex flex-col gap-2 relative group w-full ${isOpen ? 'z-50' : 'z-10'}`}>
       <label className="text-xs font-semibold text-[#8e9192] uppercase tracking-widest transition-colors">{label}</label>
       <div 
         onClick={() => setIsOpen(!isOpen)}
@@ -63,19 +63,16 @@ const AnimatedNumber = ({ value, isFloat = false }: { value: string | number, is
   return <span ref={nodeRef}>{value}</span>;
 };
 
-const CAR_MODELS = {
-  VW: ['Golf', 'Polo', 'Tiguan', 'Passat', 'T-Roc', 'Up', 'Scirocco', 'Beetle', 'Touareg', 'Arteon'],
-  Audi: ['A1', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'Q2', 'Q3', 'Q5', 'Q7', 'Q8', 'TT', 'R8']
-};
+const CAR_MODELS = {"Audi": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "Q2", "Q3", "Q5", "Q7", "Q8", "R8", "RS3", "RS4", "RS5", "RS6", "RS7", "S3", "S4", "S5", "S8", "SQ5", "SQ7", "TT"], "VW": ["Amarok", "Arteon", "Beetle", "CC", "Caddy", "Caddy Life", "Caddy Maxi", "Caddy Maxi Life", "California", "Caravelle", "Eos", "Fox", "Golf", "Golf SV", "Jetta", "Passat", "Polo", "Scirocco", "Sharan", "Shuttle", "T-Cross", "T-Roc", "Tiguan", "Tiguan Allspace", "Touareg", "Touran", "Up"], "BMW": ["1 Series", "2 Series", "3 Series", "4 Series", "5 Series", "6 Series", "7 Series", "8 Series", "M2", "M3", "M4", "M5", "M6", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "Z3", "Z4", "i3", "i8"], "Ford": ["B-MAX", "C-MAX", "EcoSport", "Edge", "Escort", "Fiesta", "Focus", "Fusion", "Galaxy", "Grand C-MAX", "Grand Tourneo Connect", "KA", "Ka+", "Kuga", "Mondeo", "Mustang", "Puma", "Ranger", "S-MAX", "Streetka", "Tourneo Connect", "Tourneo Custom", "Transit Tourneo"], "Hyundai": ["Accent", "Amica", "Getz", "I10", "I20", "I30", "I40", "I800", "IX20", "IX35", "Ioniq", "Kona", "Santa Fe", "Terracan", "Tucson", "Veloster"], "Mercedes": ["180", "200", "220", "230", "A Class", "B Class", "C Class", "CL Class", "CLA Class", "CLC Class", "CLK", "CLS Class", "E Class", "G Class", "GL Class", "GLA Class", "GLB Class", "GLC Class", "GLE Class", "GLS Class", "M Class", "R Class", "S Class", "SL CLASS", "SLK", "V Class", "X-CLASS"], "Skoda": ["Citigo", "Fabia", "Kamiq", "Karoq", "Kodiaq", "Octavia", "Rapid", "Roomster", "Scala", "Superb", "Yeti", "Yeti Outdoor"], "Toyota": ["Auris", "Avensis", "Aygo", "C-HR", "Camry", "Corolla", "GT86", "Hilux", "IQ", "Land Cruiser", "PROACE VERSO", "Prius", "RAV4", "Supra", "Urban Cruiser", "Verso", "Verso-S", "Yaris"], "Vauxhall": ["Adam", "Agila", "Ampera", "Antara", "Astra", "Cascada", "Combo Life", "Corsa", "Crossland X", "GTC", "Grandland X", "Insignia", "Kadjar", "Meriva", "Mokka", "Mokka X", "Tigra", "Vectra", "Viva", "Vivaro", "Zafira", "Zafira Tourer"]};
 
 export default function Home() {
   const [metrics, setMetrics] = useState({ R2: null, MAE: null, RMSE: null });
   const [price, setPrice] = useState('---,---');
-  const [compPrice, setCompPrice] = useState({ VW: '---,---', Audi: '---,---' });
+  const [compPrice, setCompPrice] = useState({ Slot1: '---,---', Slot2: '---,---' });
   const [status, setStatus] = useState({ text: 'Awaiting parameters', icon: 'info' });
 
   // Inputs
-  const [brand, setBrand] = useState<'VW' | 'Audi'>('VW');
+  const [brand, setBrand] = useState('VW');
   const [carModel, setCarModel] = useState(CAR_MODELS.VW[0]);
   const [engine, setEngine] = useState('1.6');
   const [fuel, setFuel] = useState('Petrol');
@@ -83,8 +80,11 @@ export default function Home() {
   const [mileage, setMileage] = useState('30000');
   const [age, setAge] = useState('5');
 
-  const [vwModel, setVwModel] = useState('Golf');
-  const [audiModel, setAudiModel] = useState('A4');
+  const [compBrand1, setCompBrand1] = useState('VW');
+  const [compModel1, setCompModel1] = useState('Golf');
+  const [compBrand2, setCompBrand2] = useState('Audi');
+  const [compModel2, setCompModel2] = useState('A4');
+  
   const [compEngine, setCompEngine] = useState('1.6');
   const [compFuel, setCompFuel] = useState('Petrol');
   const [compTrans, setCompTrans] = useState('Manual');
@@ -92,8 +92,16 @@ export default function Home() {
   const [compAge, setCompAge] = useState('3');
 
   useEffect(() => {
-    setCarModel(CAR_MODELS[brand][0]);
+    setCarModel((CAR_MODELS as any)[brand]?.[0] || '');
   }, [brand]);
+
+  useEffect(() => {
+    setCompModel1((CAR_MODELS as any)[compBrand1]?.[0] || '');
+  }, [compBrand1]);
+
+  useEffect(() => {
+    setCompModel2((CAR_MODELS as any)[compBrand2]?.[0] || '');
+  }, [compBrand2]);
 
   useEffect(() => {
     fetch('http://127.0.0.1:5000/api/metrics')
@@ -130,9 +138,10 @@ export default function Home() {
   };
 
   const handleCompare = async () => {
-    setCompPrice({ VW: '...', Audi: '...' });
+    setCompPrice({ Slot1: '...', Slot2: '...' });
     const payload = {
-      vw_model: vwModel, audi_model: audiModel,
+      brand1: compBrand1, model1: compModel1,
+      brand2: compBrand2, model2: compModel2,
       engine_size: compEngine, fuel_type: compFuel, transmission: compTrans,
       mileage: parseFloat(compMileage.replace(/,/g, '') || '30000'),
       car_age: parseFloat(compAge || '3')
@@ -144,8 +153,8 @@ export default function Home() {
         body: JSON.stringify(payload)
       });
       const data = await res.json();
-      if (data.VW && data.Audi) {
-        setCompPrice({ VW: data.VW.toLocaleString(), Audi: data.Audi.toLocaleString() });
+      if (data.Slot1 && data.Slot2) {
+        setCompPrice({ Slot1: data.Slot1.toLocaleString(), Slot2: data.Slot2.toLocaleString() });
       }
     } catch (e) {
       console.error(e);
@@ -213,8 +222,8 @@ export default function Home() {
             <div className="col-span-1 md:col-span-6 grid grid-cols-2 gap-8">
               {/* Inputs */}
               {[
-                { label: 'Car Brand', val: brand, set: setBrand, opts: ['VW', 'Audi'] },
-                { label: 'Car Model', val: carModel, set: setCarModel, opts: CAR_MODELS[brand] },
+                { label: 'Car Brand', val: brand, set: setBrand, opts: Object.keys(CAR_MODELS) },
+                { label: 'Car Model', val: carModel, set: setCarModel, opts: (CAR_MODELS as any)[brand] || [] },
                 { label: 'Engine Size (L)', val: engine, set: setEngine, opts: ['1.0', '1.2', '1.4', '1.5', '1.6', '2.0', '3.0'] },
                 { label: 'Fuel Type', val: fuel, set: setFuel, opts: ['Petrol', 'Diesel', 'Hybrid', 'Other'] },
                 { label: 'Transmission', val: trans, set: setTrans, opts: ['Manual', 'Automatic', 'Semi-Auto'] }
@@ -284,22 +293,29 @@ export default function Home() {
             </div>
             
             <div className="col-span-1 md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <motion.div whileHover={{ y: -5 }} className="bg-gradient-to-b from-[#001e50]/20 to-[#1A1A1A] border-t-4 border-[#001e50] rounded-xl p-10 flex flex-col items-center justify-center shadow-2xl relative overflow-hidden">
-                <img src="/vw-logo.png" alt="VW Logo" className="w-40 h-40 mb-6 z-10 object-contain" />
-                <div className="z-30 relative w-full mb-6 max-w-[200px]">
-                  <CustomSelect label="VW Model" value={vwModel} options={CAR_MODELS.VW} onChange={setVwModel} />
+              <motion.div whileHover={{ y: -5 }} className="bg-[#1A1A1A] border-t-4 border-[#333] rounded-xl p-10 flex flex-col items-center justify-center shadow-2xl relative overflow-hidden">
+                <h3 className="text-xl text-white mb-6 font-light tracking-widest uppercase">Slot 1</h3>
+                <div className="w-full mb-4 max-w-[200px]">
+                  <CustomSelect label="Brand" value={compBrand1} options={Object.keys(CAR_MODELS)} onChange={setCompBrand1} />
                 </div>
-                <span className="text-xs font-semibold text-[#8e9192] tracking-[0.2em] uppercase mb-2 z-10">Volkswagen Value</span>
-                <span className="text-5xl font-light text-white tabular-nums z-10"><AnimatedNumber value={compPrice.VW} /></span>
+                <div className="w-full mb-6 max-w-[200px]">
+                  <CustomSelect label="Model" value={compModel1} options={(CAR_MODELS as any)[compBrand1] || []} onChange={setCompModel1} />
+                </div>
+                <span className="text-xs font-semibold text-[#8e9192] tracking-[0.2em] uppercase mb-2 z-10">{compBrand1} Value</span>
+                <span className="text-5xl font-light text-white tabular-nums z-10"><AnimatedNumber value={compPrice.Slot1} /></span>
                 <span className="text-sm text-[#8e9192] mt-2 z-10">GBP</span>
               </motion.div>
-              <motion.div whileHover={{ y: -5 }} className="bg-gradient-to-b from-[#bb0a30]/20 to-[#1A1A1A] border-t-4 border-[#bb0a30] rounded-xl p-10 flex flex-col items-center justify-center shadow-2xl relative overflow-hidden">
-                <img src="/audi-logo.png" alt="Audi Logo" className="w-48 h-24 mb-6 z-10 object-contain" />
-                <div className="z-30 relative w-full mb-6 max-w-[200px]">
-                  <CustomSelect label="Audi Model" value={audiModel} options={CAR_MODELS.Audi} onChange={setAudiModel} />
+              
+              <motion.div whileHover={{ y: -5 }} className="bg-[#1A1A1A] border-t-4 border-[#333] rounded-xl p-10 flex flex-col items-center justify-center shadow-2xl relative overflow-hidden">
+                <h3 className="text-xl text-white mb-6 font-light tracking-widest uppercase">Slot 2</h3>
+                <div className="w-full mb-4 max-w-[200px]">
+                  <CustomSelect label="Brand" value={compBrand2} options={Object.keys(CAR_MODELS)} onChange={setCompBrand2} />
                 </div>
-                <span className="text-xs font-semibold text-[#8e9192] tracking-[0.2em] uppercase mb-2 z-10">Audi Value</span>
-                <span className="text-5xl font-light text-white tabular-nums z-10"><AnimatedNumber value={compPrice.Audi} /></span>
+                <div className="w-full mb-6 max-w-[200px]">
+                  <CustomSelect label="Model" value={compModel2} options={(CAR_MODELS as any)[compBrand2] || []} onChange={setCompModel2} />
+                </div>
+                <span className="text-xs font-semibold text-[#8e9192] tracking-[0.2em] uppercase mb-2 z-10">{compBrand2} Value</span>
+                <span className="text-5xl font-light text-white tabular-nums z-10"><AnimatedNumber value={compPrice.Slot2} /></span>
                 <span className="text-sm text-[#8e9192] mt-2 z-10">GBP</span>
               </motion.div>
             </div>

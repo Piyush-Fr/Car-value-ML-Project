@@ -101,8 +101,10 @@ def compare():
         
     try:
         data = request.json
-        vw_model = data.get('vw_model', 'Golf')
-        audi_model = data.get('audi_model', 'A4')
+        brand1 = data.get('brand1', 'VW')
+        model1 = data.get('model1', 'Golf')
+        brand2 = data.get('brand2', 'Audi')
+        model2 = data.get('model2', 'A4')
         mileage = float(data.get('mileage', 30000))
         car_age = float(data.get('car_age', 5))
         engine_size = float(data.get('engine_size', 1.6))
@@ -140,15 +142,15 @@ def compare():
                 
             return df
             
-        df_vw = build_df('VW', vw_model)
-        df_audi = build_df('Audi', audi_model)
+        df1 = build_df(brand1, model1)
+        df2 = build_df(brand2, model2)
         
-        pred_vw = model.predict(df_vw)[0]
-        pred_audi = model.predict(df_audi)[0]
+        pred1 = model.predict(df1)[0]
+        pred2 = model.predict(df2)[0]
         
         return jsonify({
-            'VW': round(pred_vw),
-            'Audi': round(pred_audi)
+            'Slot1': round(pred1),
+            'Slot2': round(pred2)
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 400

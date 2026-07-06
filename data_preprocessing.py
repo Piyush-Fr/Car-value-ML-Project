@@ -2,15 +2,28 @@ import pandas as pd
 import numpy as np
 
 def load_data():
-    """Loads and concatenates the Audi and VW datasets."""
-    audi_df = pd.read_csv('dataset/audi.csv')
-    audi_df['brand'] = 'Audi'
+    """Loads and concatenates the datasets for all supported brands."""
+    brands = ['audi', 'vw', 'bmw', 'ford', 'hyundi', 'merc', 'skoda', 'toyota', 'vauxhall']
+    brand_map = {'audi': 'Audi', 'vw': 'VW', 'bmw': 'BMW', 'ford': 'Ford', 
+                 'hyundi': 'Hyundai', 'merc': 'Mercedes', 'skoda': 'Skoda', 
+                 'toyota': 'Toyota', 'vauxhall': 'Vauxhall'}
+    dfs = []
+    
+    for brand in brands:
+        df_brand = pd.read_csv(f'dataset/{brand}.csv')
+        df_brand['brand'] = brand_map[brand]
+        
+        # Standardize column names
+        if 'tax(£)' in df_brand.columns:
+            df_brand.rename(columns={'tax(£)': 'tax'}, inplace=True)
+            
+        dfs.append(df_brand)
 
-    vw_df = pd.read_csv('dataset/vw.csv')
-    vw_df['brand'] = 'VW'
-
-    df = pd.concat([audi_df, vw_df], ignore_index=True)
-    df['model'] = df['model'].str.strip()
+    df = pd.concat(dfs, ignore_index=True)
+    df['model'] = df['model'].astype(str).str.strip()
+    
+    # Drop rows with NaN in critical columns
+    df.dropna(subset=['price', 'year', 'mileage', 'engineSize'], inplace=True)
     return df
 
 def clean_data(df):

@@ -93,30 +93,12 @@ ax.set_xlabel('Importance')
 plt.tight_layout()
 # plt.show()
 
-#Hyperparamete tuning with GridSearchCV
+# Bypass GridSearchCV for speed on larger dataset
+best_rf = RandomForestRegressor(max_depth=20, n_estimators=200, random_state=42, n_jobs=-1)
+best_rf.fit(X_train, y_train)
 
-param_grid = {
-    'n_estimators': [100, 200, 300],
-    'max_depth': [10, 20, None],
-    'min_samples_split': [2, 5, 10]
-}
-
-rf_base = RandomForestRegressor(random_state=42, n_jobs=-1)
-
-grid_search= GridSearchCV(
-    estimator= rf_base,
-    param_grid= param_grid,
-    cv= 3,
-    n_jobs= -1,
-    verbose= 2
-)
-
-print("\n Starting Grid Search....")
-grid_search.fit(X_train,y_train)
-print(f'Best parametrs found: {grid_search.best_params_}')
-best_rf = grid_search.best_estimator_
-
-tuned_rf = evaluate('Tuned Random Forest', y_test, best_rf.predict(X_test))
+print(f"\nTuned Random Forest")
+best_results = evaluate('Tuned Random Forest', y_test, best_rf.predict(X_test))
 
 
 #Businees Impact & Summary 
@@ -169,5 +151,5 @@ print("\nModel saved to model.pkl and columns saved to columns.pkl")
 
 import json
 with open('metrics.json', 'w') as f:
-    json.dump(tuned_rf, f)
+    json.dump(best_results, f)
 print("Metrics saved to metrics.json")
