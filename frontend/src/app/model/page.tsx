@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, animate, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { AreaChart, Area, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { BarChart3, Calculator, Info, CheckCircle, AlertCircle, Loader2, ArrowRightLeft, ChevronDown } from 'lucide-react';
 import carDefaultsData from '../../carDefaults.json';
 import carEngineSizesData from '../../carEngineSizes.json';
@@ -71,6 +72,17 @@ const AnimatedNumber = ({ value, isFloat = false }: { value: string | number, is
 const CAR_MODELS = {"Audi": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "Q2", "Q3", "Q5", "Q7", "Q8", "R8", "RS3", "RS4", "RS5", "RS6", "RS7", "S3", "S4", "S5", "S8", "SQ5", "SQ7", "TT"], "VW": ["Amarok", "Arteon", "Beetle", "CC", "Caddy", "Caddy Life", "Caddy Maxi", "Caddy Maxi Life", "California", "Caravelle", "Eos", "Fox", "Golf", "Golf SV", "Jetta", "Passat", "Polo", "Scirocco", "Sharan", "Shuttle", "T-Cross", "T-Roc", "Tiguan", "Tiguan Allspace", "Touareg", "Touran", "Up"], "BMW": ["1 Series", "2 Series", "3 Series", "4 Series", "5 Series", "6 Series", "7 Series", "8 Series", "M2", "M3", "M4", "M5", "M6", "X1", "X2", "X3", "X4", "X5", "X6", "X7", "Z3", "Z4", "i3", "i8"], "Ford": ["B-MAX", "C-MAX", "EcoSport", "Edge", "Escort", "Fiesta", "Focus", "Fusion", "Galaxy", "Grand C-MAX", "Grand Tourneo Connect", "KA", "Ka+", "Kuga", "Mondeo", "Mustang", "Puma", "Ranger", "S-MAX", "Streetka", "Tourneo Connect", "Tourneo Custom", "Transit Tourneo"], "Hyundai": ["Accent", "Amica", "Getz", "I10", "I20", "I30", "I40", "I800", "IX20", "IX35", "Ioniq", "Kona", "Santa Fe", "Terracan", "Tucson", "Veloster"], "Mercedes": ["180", "200", "220", "230", "A Class", "B Class", "C Class", "CL Class", "CLA Class", "CLC Class", "CLK", "CLS Class", "E Class", "G Class", "GL Class", "GLA Class", "GLB Class", "GLC Class", "GLE Class", "GLS Class", "M Class", "R Class", "S Class", "SL CLASS", "SLK", "V Class", "X-CLASS"], "Skoda": ["Citigo", "Fabia", "Kamiq", "Karoq", "Kodiaq", "Octavia", "Rapid", "Roomster", "Scala", "Superb", "Yeti", "Yeti Outdoor"], "Toyota": ["Auris", "Avensis", "Aygo", "C-HR", "Camry", "Corolla", "GT86", "Hilux", "IQ", "Land Cruiser", "PROACE VERSO", "Prius", "RAV4", "Supra", "Urban Cruiser", "Verso", "Verso-S", "Yaris"], "Vauxhall": ["Adam", "Agila", "Ampera", "Antara", "Astra", "Cascada", "Combo Life", "Corsa", "Crossland X", "GTC", "Grandland X", "Insignia", "Kadjar", "Meriva", "Mokka", "Mokka X", "Tigra", "Vectra", "Viva", "Vivaro", "Zafira", "Zafira Tourer"]};
 
 export default function Home() {
+
+  // Market Insights State
+  const [marketData, setMarketData] = useState<any>(null);
+  const [insightsBrand, setInsightsBrand] = useState('All Brands');
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/api/market-data')
+      .then(r => r.json())
+      .then(d => { if (!d.error) setMarketData(d); })
+      .catch(e => console.error(e));
+  }, []);
+
   const [metrics, setMetrics] = useState({ R2: null, MAE: null, RMSE: null });
   const [price, setPrice] = useState('---,---');
   const [compPrice, setCompPrice] = useState({ Slot1: '---,---', Slot2: '---,---' });
@@ -279,13 +291,14 @@ export default function Home() {
         <div className="w-1/3 flex justify-start pointer-events-auto">
           <Link href="/" className="text-2xl tracking-widest text-white font-light select-none hover:opacity-80 transition-opacity py-4">MONOVALUATION</Link>
         </div>
-        <div className="w-1/3 flex justify-center gap-8 pointer-events-auto">
+        <div className="w-1/3 flex justify-center gap-6 pointer-events-auto">
           {[
             { id: 'predictor', label: 'Estimator' },
             { id: 'comparison', label: 'Comparison' },
-            { id: 'drivers', label: 'Value Drivers' }
+            { id: 'drivers', label: 'Value Drivers' },
+            { id: 'insights', label: 'Insights' }
           ].map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`py-5 text-sm font-semibold tracking-widest uppercase transition-colors relative ${activeTab === tab.id ? 'text-white' : 'text-[#8e9192] hover:text-[#c4c7c8]'}`}>
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`py-5 text-sm font-semibold tracking-widest uppercase transition-colors relative whitespace-nowrap ${activeTab === tab.id ? 'text-white' : 'text-[#8e9192] hover:text-[#c4c7c8]'}`}>
               {tab.label}
               {activeTab === tab.id && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />}
             </button>
@@ -566,6 +579,102 @@ export default function Home() {
         </div>
       </motion.section>
       )}
+
+      {activeTab === 'insights' && (
+      <motion.section key="insights" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="py-8 relative z-20 min-h-screen">
+        <div className="fixed inset-0 w-full h-screen overflow-hidden z-0 bg-[#0A0A0A]">
+          {insightsBrand !== 'All Brands' && (
+            <motion.img
+              key={insightsBrand}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              transition={{ duration: 1 }}
+              src={`/cars/${insightsBrand}.jpg`}
+              alt={insightsBrand}
+              className="absolute w-full h-full object-cover mix-blend-screen scale-105"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/40 to-transparent opacity-90" />
+        </div>
+
+        <div className="max-w-7xl mx-auto w-full px-8 md:px-16 relative z-10">
+          {!marketData ? (
+            <div className="min-h-[80vh] flex flex-col items-center justify-center gap-6">
+              <Loader2 size={48} className="animate-spin text-white" />
+              <p className="text-lg text-[#8e9192] tracking-widest uppercase font-semibold">Loading Market Data...</p>
+            </div>
+          ) : (
+          <>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-4 mix-blend-difference">
+              <BarChart3 size={32} className="text-white" />
+              <h2 className="text-3xl font-light tracking-wide text-white">Market Insights</h2>
+            </div>
+            <div className="w-56">
+              <CustomSelect label="Brand" value={insightsBrand} options={['All Brands', ...(marketData?.brands || [])]} onChange={setInsightsBrand} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="bg-[#0A0A0A]/40 backdrop-blur-xl border border-white/10 rounded-xl p-6 shadow-2xl flex flex-col gap-6">
+              <h3 className="text-sm font-semibold tracking-[0.2em] uppercase text-[#8e9192]">Depreciation Curve • Median By Age</h3>
+              <div className="h-80 w-full">
+                {marketData?.data?.[insightsBrand] ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={marketData.data[insightsBrand].depreciation} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
+                      <defs>
+                        <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ffffff" stopOpacity={0.5}/>
+                          <stop offset="95%" stopColor="#ffffff" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={true} />
+                      <XAxis dataKey="age" stroke="#8e9192" tick={{ fill: '#8e9192', fontSize: 12 }} label={{ value: 'Vehicle age (yrs)', position: 'bottom', fill: '#8e9192' }} />
+                      <YAxis stroke="#8e9192" tickFormatter={(v) => `£${v/1000}k`} tick={{ fill: '#8e9192', fontSize: 12 }} />
+                      <Tooltip
+                        contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }}
+                        itemStyle={{ color: '#ffffff', fontWeight: 'bold' }}
+                        labelStyle={{ color: '#8e9192', marginBottom: '4px' }}
+                        formatter={(value: any) => [`£${Number(value).toLocaleString()}`, 'Median Price']}
+                        labelFormatter={(label) => `Age: ${label} years`}
+                      />
+                      <Area type="monotone" dataKey="median_price" stroke="#ffffff" strokeWidth={3} fillOpacity={1} fill="url(#colorPrice)" isAnimationActive={false} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-[#8e9192]"><Loader2 className="animate-spin" /></div>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-[#0A0A0A]/40 backdrop-blur-xl border border-white/10 rounded-xl p-6 shadow-2xl flex flex-col gap-6">
+              <h3 className="text-sm font-semibold tracking-[0.2em] uppercase text-[#8e9192]">Price vs Odometer • Market Scatter</h3>
+              <div className="h-80 w-full">
+                {marketData?.data?.[insightsBrand] ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
+                      <XAxis type="number" dataKey="mileage" name="Mileage" stroke="#8e9192" tickFormatter={(v) => `${v/1000}k`} tick={{ fill: '#8e9192', fontSize: 12 }} domain={[0, 150000]} />
+                      <YAxis type="number" dataKey="price" name="Price" stroke="#8e9192" tickFormatter={(v) => `£${v/1000}k`} tick={{ fill: '#8e9192', fontSize: 12 }} />
+                      <Tooltip cursor={{ strokeDasharray: '3 3' }}
+                        contentStyle={{ backgroundColor: '#111', border: '1px solid #333', borderRadius: '8px', color: '#fff' }}
+                        itemStyle={{ color: '#ffffff' }}
+                      />
+                      <Scatter name="Cars" data={marketData.data[insightsBrand].scatter} fill="#ffffff" fillOpacity={0.6} shape="circle" isAnimationActive={false} />
+                    </ScatterChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-[#8e9192]"><Loader2 className="animate-spin" /></div>
+                )}
+              </div>
+            </div>
+          </div>
+          </>
+          )}
+        </div>
+      </motion.section>
+      )}
+
       </AnimatePresence>
       </div>
     </div>

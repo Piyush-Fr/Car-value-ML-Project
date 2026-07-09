@@ -204,6 +204,18 @@ def value_drivers():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+@app.route('/api/market-data', methods=['GET'])
+def get_market_data():
+    try:
+        data_path = os.path.join(BASE_DIR, 'market_data.json')
+        if not os.path.exists(data_path):
+            return jsonify({'error': 'Market data not found. Run generate_market_data.py first.'}), 404
+        with open(data_path, 'r') as f:
+            data = json.load(f)
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
 
     app.run(debug=True)
