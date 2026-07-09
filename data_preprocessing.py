@@ -51,7 +51,7 @@ def get_prepared_data():
     df = engineer_features(df)
     
     y = df['price']
-    X = df.drop(columns=['price', 'year'])
+    X = df.drop(columns=['price', 'year', 'tax', 'mpg'], errors='ignore')
     X = pd.get_dummies(X, drop_first=True)
     
     return df, X, y

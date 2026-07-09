@@ -94,9 +94,9 @@ plt.tight_layout()
 # plt.show()
 
 # Bypass GridSearchCV for speed on larger dataset
-best_rf = RandomForestRegressor(max_depth=20, n_estimators=200, random_state=42, n_jobs=-1)
+# Reduced n_estimators and max_depth to keep the model size small for deployment
+best_rf = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1, min_samples_split=5)
 best_rf.fit(X_train, y_train)
-
 print(f"\nTuned Random Forest")
 best_results = evaluate('Tuned Random Forest', y_test, best_rf.predict(X_test))
 
@@ -145,7 +145,8 @@ print(f"\nCar B - 2018 Audi A4 2.0L Automatic Petrol 30k miles:")
 print(f"  Predicted Price: £{pred_b:,.0f}")
 
 # Save the model and columns for the Flask web app
-joblib.dump(best_rf, 'model.pkl')
+# Using compress=3 to significantly reduce the file size for deployment
+joblib.dump(best_rf, 'model.pkl', compress=3)
 joblib.dump(list(X_train.columns), 'columns.pkl')
 print("\nModel saved to model.pkl and columns saved to columns.pkl")
 
