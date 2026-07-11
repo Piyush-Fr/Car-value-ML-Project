@@ -77,7 +77,7 @@ export default function Home() {
   const [marketData, setMarketData] = useState<any>(null);
   const [insightsBrand, setInsightsBrand] = useState('All Brands');
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/market-data')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000'}/api/market-data`)
       .then(r => r.json())
       .then(d => { if (!d.error) setMarketData(d); })
       .catch(e => console.error(e));
@@ -198,7 +198,7 @@ export default function Home() {
   }, [vdModel]);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:5000/api/metrics')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000'}/api/metrics`)
       .then(r => r.json())
       .then(data => setMetrics(data))
       .catch(e => console.error(e));
@@ -214,7 +214,7 @@ export default function Home() {
     };
 
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/predict', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000'}/api/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -242,7 +242,7 @@ export default function Home() {
       car_age: parseFloat(compAge || '3')
     };
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/compare', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000'}/api/compare`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -266,7 +266,7 @@ export default function Home() {
       car_age: parseFloat(vdAge || '3')
     };
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/value_drivers', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000'}/api/value_drivers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -589,7 +589,7 @@ export default function Home() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.6 }}
               transition={{ duration: 1 }}
-              src={`/cars/${insightsBrand}.jpg`}
+              src={`/cars/${insightsBrand.toUpperCase()}.jpg`}
               alt={insightsBrand}
               className="absolute w-full h-full object-cover mix-blend-screen scale-105"
             />
