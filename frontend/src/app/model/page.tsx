@@ -583,17 +583,6 @@ export default function Home() {
       {activeTab === 'insights' && (
       <motion.section key="insights" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="py-8 relative z-20 min-h-screen">
         <div className="fixed inset-0 w-full h-screen overflow-hidden z-0 bg-[#0A0A0A]">
-          {insightsBrand !== 'All Brands' && (
-            <motion.img
-              key={insightsBrand}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
-              transition={{ duration: 1 }}
-              src={`/cars/${insightsBrand.toUpperCase()}.jpg`}
-              alt={insightsBrand}
-              className="absolute w-full h-full object-cover mix-blend-screen scale-105"
-            />
-          )}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/40 to-transparent opacity-90" />
         </div>
 
