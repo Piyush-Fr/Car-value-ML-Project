@@ -313,15 +313,6 @@ export default function Home() {
       {activeTab === 'predictor' && (
       <motion.section key="predictor" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="py-8 relative z-20">
         <div className="fixed inset-0 w-full h-screen overflow-hidden z-0 bg-[#0A0A0A]">
-          <motion.img 
-            key={brand}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            transition={{ duration: 1 }}
-            src={`/cars/${brand}.jpg`} 
-            alt={brand}
-            className="absolute w-full h-full object-cover mix-blend-screen scale-105"
-          />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/40 to-transparent opacity-90" />
         </div>
         
@@ -386,15 +377,6 @@ export default function Home() {
       {activeTab === 'comparison' && (
       <motion.section key="comparison" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="py-8 relative z-20">
         <div className="fixed inset-0 w-full h-screen overflow-hidden z-0 bg-[#0A0A0A]">
-          <motion.img 
-            key={compBrand1}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            transition={{ duration: 1 }}
-            src={`/cars/${compBrand1}.jpg`} 
-            alt={compBrand1}
-            className="absolute w-full h-full object-cover mix-blend-screen scale-105"
-          />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/40 to-transparent opacity-90" />
         </div>
         
@@ -478,15 +460,6 @@ export default function Home() {
       {activeTab === 'drivers' && (
       <motion.section key="drivers" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="py-8 relative z-20">
         <div className="fixed inset-0 w-full h-screen overflow-hidden z-0 bg-[#0A0A0A]">
-          <motion.img 
-            key={vdBrand}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            transition={{ duration: 1 }}
-            src={`/cars/${vdBrand}.jpg`} 
-            alt={vdBrand}
-            className="absolute w-full h-full object-cover mix-blend-screen scale-105"
-          />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/40 to-transparent opacity-90" />
         </div>
         
