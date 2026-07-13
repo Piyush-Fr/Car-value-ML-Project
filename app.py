@@ -28,7 +28,11 @@ def home():
 @app.route('/api/predict', methods=['POST'])
 def predict():
     if model is None or model_columns is None:
-        return jsonify({'error': 'Model is not loaded.'}), 500
+        try:
+            files = os.listdir(BASE_DIR)
+        except Exception as e:
+            files = str(e)
+        return jsonify({'error': f'Model is not loaded. Files: {files}'}), 500
         
     try:
         data = request.json
