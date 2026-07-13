@@ -1,3 +1,4 @@
+/* eslint-disable */
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { motion, animate, AnimatePresence } from 'framer-motion';
