@@ -10,15 +10,24 @@ CORS(app)
 
 # Load model and columns
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-model_path = os.path.join(BASE_DIR, 'model.pkl')
+model_path = os.path.join(BASE_DIR, 'lr_model.pkl')
 columns_path = os.path.join(BASE_DIR, 'columns.pkl')
 
+load_error = None
+
 if os.path.exists(model_path) and os.path.exists(columns_path):
-    model = joblib.load(model_path)
-    model_columns = joblib.load(columns_path)
+    try:
+        model = joblib.load(model_path)
+        model_columns = joblib.load(columns_path)
+    except Exception as e:
+        model = None
+        model_columns = None
+        load_error = str(e)
+        print("Error loading model:", e)
 else:
     model = None
     model_columns = None
+    load_error = f"Files not found. model.pkl: {os.path.exists(model_path)}, columns.pkl: {os.path.exists(columns_path)}"
     print("Warning: model.pkl or columns.pkl not found at", BASE_DIR)
 
 @app.route('/')
@@ -32,7 +41,7 @@ def predict():
             files = os.listdir(BASE_DIR)
         except Exception as e:
             files = str(e)
-        return jsonify({'error': f'Model is not loaded. Files: {files}'}), 500
+        return jsonify({'error': f'Model is not loaded. Error: {load_error}. Files: {files}'}), 500
         
     try:
         data = request.json
