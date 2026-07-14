@@ -288,27 +288,27 @@ export default function Home() {
   
   return (
     <div className="min-h-screen bg-[#0A0A0A] text-[#e5e2e1] font-sans overflow-x-hidden">
-      <header className="fixed top-0 w-full flex justify-between items-center px-8 md:px-16 z-50 bg-gradient-to-b from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent pointer-events-none">
-        <div className="w-1/3 flex justify-start pointer-events-auto">
-          <Link href="/" className="text-2xl tracking-widest text-white font-light select-none hover:opacity-80 transition-opacity py-4">MONOVALUATION</Link>
+      <header className="fixed top-0 w-full flex flex-col lg:flex-row justify-between items-center px-0 lg:px-16 z-50 bg-[#0A0A0A] lg:bg-transparent lg:bg-gradient-to-b lg:from-[#0A0A0A] lg:via-[#0A0A0A]/90 lg:to-transparent pointer-events-none border-b border-[#262626] lg:border-none">
+        <div className="w-full lg:w-1/3 flex justify-center lg:justify-start pointer-events-auto border-b border-[#1a1a1a] lg:border-none">
+          <Link href="/" className="text-lg lg:text-2xl tracking-widest text-white font-light select-none hover:opacity-80 transition-opacity py-3 lg:py-4">MONOVALUATION</Link>
         </div>
-        <div className="w-1/3 flex justify-center gap-6 pointer-events-auto">
+        <div className="w-full lg:w-1/3 flex justify-start lg:justify-center gap-6 pointer-events-auto overflow-x-auto lg:overflow-visible [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-6 lg:px-0 bg-[#0A0A0A] lg:bg-transparent">
           {[
             { id: 'predictor', label: 'Estimator' },
             { id: 'comparison', label: 'Comparison' },
             { id: 'drivers', label: 'Value Drivers' },
             { id: 'insights', label: 'Insights' }
           ].map(tab => (
-            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`py-5 text-sm font-semibold tracking-widest uppercase transition-colors relative whitespace-nowrap ${activeTab === tab.id ? 'text-white' : 'text-[#8e9192] hover:text-[#c4c7c8]'}`}>
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`py-3 lg:py-5 text-[11px] lg:text-sm font-semibold tracking-widest uppercase transition-colors relative whitespace-nowrap ${activeTab === tab.id ? 'text-white' : 'text-[#8e9192] hover:text-[#c4c7c8]'}`}>
               {tab.label}
               {activeTab === tab.id && <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-white" />}
             </button>
           ))}
         </div>
-        <div className="w-1/3"></div>
+        <div className="hidden lg:block w-1/3"></div>
       </header>
 
-      <div className="pt-[72px]">
+      <div className="pt-[110px] lg:pt-[72px]">
       <AnimatePresence mode="wait">
 
       {activeTab === 'predictor' && (
